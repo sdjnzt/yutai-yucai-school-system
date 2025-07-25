@@ -3,10 +3,15 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const PrivateRoute = ({ children }) => {
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem('token');
-
-  if (!isAuthenticated) {
-    // 将用户重定向到登录页面，但保存他们试图访问的URL
+  const token = localStorage.getItem('token');
+  
+  // 检查 token 是否存在且有效
+  const isValidToken = token && token.startsWith('dummy-token-');
+  
+  if (!isValidToken) {
+    // 清除无效的 token
+    localStorage.clear();
+    // 重定向到登录页面，保存当前路径
     return <Navigate to="login" state={{ from: location }} replace />;
   }
 

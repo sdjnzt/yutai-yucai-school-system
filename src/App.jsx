@@ -49,8 +49,15 @@ const App = () => {
       <AntApp>
         <Suspense fallback={<div style={{ textAlign: 'center', marginTop: '20%' }}><Spin size="large" /></div>}>
           <Routes>
-            {/* 根路径重定向到首页，首页会被 PrivateRoute 保护 */}
-            <Route path="" element={<Navigate to="home" replace />} />
+            {/* 根路径重定向到首页或登录页面 */}
+            <Route
+              path=""
+              element={
+                localStorage.getItem('token')
+                  ? <Navigate to="home" replace />
+                  : <Navigate to="login" replace />
+              }
+            />
 
             {/* 登录页面 */}
             <Route path="login" element={<Login />} />
@@ -107,8 +114,15 @@ const App = () => {
             </Route>
             </Route>
 
-            {/* 404页面重定向到首页 */}
-            <Route path="*" element={<Navigate to="home" replace />} />
+            {/* 404页面重定向到首页或登录页面 */}
+            <Route
+              path="*"
+              element={
+                localStorage.getItem('token')
+                  ? <Navigate to="home" replace />
+                  : <Navigate to="login" replace />
+              }
+            />
           </Routes>
         </Suspense>
       </AntApp>

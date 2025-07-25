@@ -125,13 +125,15 @@ const MainLayout = () => {
           okText: '确定',
           cancelText: '取消',
           onOk: () => {
-            localStorage.removeItem('token');
-            navigate('login', { replace: true });
-            modal.success({
-              title: '退出成功',
-              content: '已安全退出系统',
-              duration: 2,
-            });
+            // 清除所有状态
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // 使用 window.location.replace 进行完全重定向
+            window.location.replace('#/login');
+            
+            // 刷新页面以确保状态完全重置
+            window.location.reload();
           },
         });
         break;

@@ -17,21 +17,21 @@ import {
   SafetyCertificateOutlined,
   LoginOutlined,
 } from '@ant-design/icons';
-import { useNavigate, useLocation } from 'react-router-dom';
-import './Login.css'; // 新增样式文件引用
+import './Login.css';
 
 const { Title, Text } = Typography;
 
 const Login = () => {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [captcha, setCaptcha] = useState('1234');
 
   useEffect(() => {
-    localStorage.removeItem('token');
+    // 确保清除 token
+    localStorage.clear();
+    // 添加登录页面样式
     document.body.classList.add('login-page');
+    
     return () => {
       document.body.classList.remove('login-page');
     };
@@ -56,8 +56,8 @@ const Login = () => {
       if (values.username === 'admin' && values.password === '123456') {
         localStorage.setItem('token', 'dummy-token-' + Date.now());
         message.success('登录成功');
-        const from = location.state?.from?.pathname || 'home';
-        navigate(from, { replace: true });
+        // 使用 window.location.replace 进行重定向
+        window.location.replace('#/home');
       } else {
         message.error('用户名或密码错误');
         refreshCaptcha();
