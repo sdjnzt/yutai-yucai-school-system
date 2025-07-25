@@ -1,0 +1,274 @@
+/* 全局样式 */
+:root {
+  --primary-color: #1890ff;
+  --secondary-color: #096dd9;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+  --heading-color: #262626;
+  --text-color: #595959;
+  --text-color-secondary: #8c8c8c;
+  --disabled-color: #d9d9d9;
+  --border-color: #d9d9d9;
+  --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 布局样式 */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+  z-index: 10;
+}
+
+.logo-container {
+  height: 64px;
+  padding: 16px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.logo-text {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.main-content {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: calc(100vh - 64px);
+}
+
+/* 卡片样式 */
+.ant-card {
+  box-shadow: var(--box-shadow);
+  border-radius: 4px;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* 表格样式 */
+.ant-table-thead > tr > th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+.ant-table-row:hover {
+  background: #f5f5f5;
+}
+
+/* 表单样式 */
+.ant-form-item-label > label {
+  font-weight: 500;
+}
+
+.ant-input,
+.ant-select-selector,
+.ant-btn {
+  border-radius: 4px;
+}
+
+/* 按钮样式 */
+.ant-btn-primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.ant-btn-primary:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+/* 统计卡片样式 */
+.statistic-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.statistic-card .ant-statistic-title {
+  font-size: 16px;
+  color: var(--text-color);
+}
+
+.statistic-card .ant-statistic-content {
+  font-size: 24px;
+  color: var(--heading-color);
+}
+
+/* 图表样式 */
+.chart-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .ant-card {
+    margin-bottom: 16px;
+  }
+
+  .ant-form-inline .ant-form-item {
+    margin-bottom: 16px;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .ant-layout-sider,
+  .ant-layout-header,
+  .ant-btn,
+  .ant-pagination,
+  .ant-table-column-sorter {
+    display: none !important;
+  }
+
+  .ant-layout {
+    background: #fff !important;
+  }
+
+  .ant-card {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .ant-table {
+    font-size: 12px !important;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #fff !important;
+    border-bottom: 1px solid #000 !important;
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #ddd !important;
+  }
+}
+
+/* 动画效果 */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 页面加载动画 */
+.page-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #fff;
+}
+
+.page-loading-spin {
+  font-size: 24px;
+}
+
+.user-dropdown-link {
+  transition: all 0.3s;
+}
+
+.user-dropdown-link:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+/* 添加退出确认框的样式 */
+.ant-modal-confirm-warning .ant-modal-confirm-body > .anticon {
+  color: #faad14;
+}
+
+/* 用户下拉菜单样式 */
+.ant-dropdown-menu {
+  padding: 4px !important;
+}
+
+.ant-dropdown-menu-item {
+  border-radius: 4px !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.ant-dropdown-menu-item-divider {
+  margin: 4px 0 !important;
+}
+
+/* 用户头像区域悬停效果 */
+.ant-dropdown-open .anticon-caret-down {
+  transform: rotate(180deg);
+}
+
+/* 头部图标按钮的悬停效果 */
+.ant-btn-text:hover {
+  background: rgba(0, 0, 0, 0.025) !important;
+}
+
+/* 徽章动画效果 */
+.ant-badge-count {
+  animation: badge-zoom 0.3s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+}
+
+@keyframes badge-zoom {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+} 
