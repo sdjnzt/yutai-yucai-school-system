@@ -1,32 +1,78 @@
+.login-page {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .login-container {
+  height: 100vh;
+  background: linear-gradient(120deg, #1890ff 0%, #722ed1 100%);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  position: relative;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+.login-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 40px 0;
+  color: #fff;
 }
 
 .login-title {
+  color: #fff !important;
+  margin-bottom: 0 !important;
+}
+
+.login-subtitle {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 16px;
+}
+
+.login-card {
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px);
+  border-radius: 8px !important;
+}
+
+.login-welcome {
   text-align: center;
-  color: #1890ff;
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: bold;
+  margin-bottom: 24px;
 }
 
-.login-form {
-  max-width: 300px;
-  margin: 0 auto;
+.captcha-button {
+  background: #fafafa !important;
+  height: 40px !important;
+  font-family: monospace !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  letter-spacing: 4px !important;
+  cursor: pointer !important;
+  user-select: none;
 }
 
-.login-button {
-  width: 100%;
+.login-footer {
+  text-align: center;
+}
+
+/* 响应式调整 */
+@media screen and (max-width: 576px) {
+  .login-card {
+    width: 90%;
+    margin: 0 20px;
+  }
+  
+  .login-title {
+    font-size: 24px !important;
+  }
+  
+  .login-subtitle {
+    font-size: 14px;
+  }
 } 

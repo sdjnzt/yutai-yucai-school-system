@@ -10,7 +10,6 @@ import {
   Row,
   Col,
   Typography,
-  Alert,
 } from 'antd';
 import {
   UserOutlined,
@@ -19,6 +18,7 @@ import {
   LoginOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './Login.css'; // 新增样式文件引用
 
 const { Title, Text } = Typography;
 
@@ -27,21 +27,21 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
-  const [captcha, setCaptcha] = useState('1234'); // 模拟验证码
+  const [captcha, setCaptcha] = useState('1234');
 
-  // 组件加载时清除 token
   useEffect(() => {
     localStorage.removeItem('token');
+    document.body.classList.add('login-page');
+    return () => {
+      document.body.classList.remove('login-page');
+    };
   }, []);
 
-  // 刷新验证码
   const refreshCaptcha = () => {
-    // 模拟生成4位随机验证码
     const newCaptcha = Math.random().toString(36).slice(-4).toUpperCase();
     setCaptcha(newCaptcha);
   };
 
-  // 处理登录
   const handleLogin = async (values) => {
     if (values.captcha.toUpperCase() !== captcha) {
       message.error('验证码错误');
@@ -51,16 +51,12 @@ const Login = () => {
 
     setLoading(true);
     try {
-      // 模拟登录请求
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       if (values.username === 'admin' && values.password === '123456') {
-        // 登录成功后设置 token
         localStorage.setItem('token', 'dummy-token-' + Date.now());
         message.success('登录成功');
-        
-        // 如果有之前保存的路径，就导航到那里，否则去首页
-        const from = location.state?.from?.pathname || '/home';
+        const from = location.state?.from?.pathname || 'home';
         navigate(from, { replace: true });
       } else {
         message.error('用户名或密码错误');
@@ -72,43 +68,18 @@ const Login = () => {
   };
 
   return (
-    <div
-      style={{
-        height: '100vh',
-        background: 'linear-gradient(120deg, #1890ff 0%, #722ed1 100%)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'relative',
-      }}
-    >
-      {/* 背景装饰 */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          textAlign: 'center',
-          padding: '40px 0',
-          color: '#fff',
-        }}
-      >
-        <Title level={2} style={{ color: '#fff', marginBottom: 0 }}>
+    <div className="login-container">
+      <div className="login-header">
+        <Title level={2} className="login-title">
           鱼台县育才学校教务系统
         </Title>
-        <Text style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: 16 }}>
+        <Text className="login-subtitle">
           YUTAI YUCAI SCHOOL ACADEMIC AFFAIRS SYSTEM
         </Text>
       </div>
 
-      <Card
-        style={{
-          width: 400,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-        }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: 24 }}>
+      <Card className="login-card">
+        <div className="login-welcome">
           <Title level={3} style={{ marginBottom: 8 }}>
             用户登录
           </Title>
@@ -162,15 +133,7 @@ const Login = () => {
               <Col span={8}>
                 <Button
                   block
-                  style={{
-                    background: '#fafafa',
-                    height: '40px',
-                    fontFamily: 'monospace',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    letterSpacing: '4px',
-                    cursor: 'pointer',
-                  }}
+                  className="captcha-button"
                   onClick={refreshCaptcha}
                 >
                   {captcha}
@@ -201,14 +164,12 @@ const Login = () => {
 
         <Divider style={{ margin: '24px 0 16px' }} />
 
-        <div style={{ textAlign: 'center' }}>
+        <div className="login-footer">
           <Space direction="vertical" size={4}>
-            <div>
-              <Space split={<Divider type="vertical" />}>
-                <Text type="secondary">推荐浏览器</Text>
-                <Text type="secondary">分辨率 1920×1080</Text>
-              </Space>
-            </div>
+            <Space split={<Divider type="vertical" />}>
+              <Text type="secondary">推荐浏览器</Text>
+              <Text type="secondary">分辨率 1920×1080</Text>
+            </Space>
             <Text type="secondary">Copyright © 2025 鱼台县育才学校 版权所有</Text>
           </Space>
         </div>
