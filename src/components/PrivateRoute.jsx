@@ -7,7 +7,7 @@ const PrivateRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     // 将用户重定向到登录页面，但保存他们试图访问的URL
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to="login" state={{ from: location }} replace />;
   }
 
   return children;

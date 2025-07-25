@@ -50,57 +50,57 @@ const App = () => {
         <Suspense fallback={<div style={{ textAlign: 'center', marginTop: '20%' }}><Spin size="large" /></div>}>
           <Routes>
             {/* 根路径重定向到首页，首页会被 PrivateRoute 保护 */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="" element={<Navigate to="home" replace />} />
 
             {/* 登录页面 */}
-            <Route path="/login" element={<Login />} />
+            <Route path="login" element={<Login />} />
 
             {/* 受保护的路由 */}
             <Route element={<PrivateRoute><MainLayout /></PrivateRoute>}>
               {/* 首页 */}
-              <Route path="/home" element={<Home />} />
+              <Route path="home" element={<Home />} />
               
               {/* 学生管理 */}
-              <Route path="/student">
+              <Route path="student">
                 <Route path="list" element={<StudentList />} />
                 <Route path="class" element={<ClassManagement />} />
               </Route>
 
               {/* 教师管理 */}
-              <Route path="/teacher">
+              <Route path="teacher">
                 <Route path="list" element={<TeacherList />} />
                 <Route path="schedule" element={<TeacherSchedule />} />
               </Route>
 
               {/* 课程管理 */}
-              <Route path="/course">
+              <Route path="course">
                 <Route path="list" element={<CourseList />} />
                 <Route path="schedule" element={<CourseSchedule />} />
                 <Route path="plan" element={<CoursePlan />} />
               </Route>
 
               {/* 成绩管理 */}
-              <Route path="/score">
+              <Route path="score">
                 <Route path="input" element={<ScoreInput />} />
                 <Route path="analysis" element={<ScoreAnalysis />} />
                 <Route path="report" element={<ScoreReport />} />
               </Route>
 
               {/* 流程审批 */}
-              <Route path="/workflow">
+              <Route path="workflow">
                 <Route path="pending" element={<PendingApproval />} />
                 <Route path="done" element={<DoneApproval />} />
               </Route>
 
               {/* 通知公告 */}
-              <Route path="/announcement">
+              <Route path="announcement">
                 <Route path="list" element={<NotificationList />} />
                 <Route path="create" element={<PublishNotification />} />
                 <Route path="my" element={<MyNotification />} />
               </Route>
 
               {/* 系统管理 */}
-              <Route path="/system">
+              <Route path="system">
                 <Route path="users" element={<UserManagement />} />
                 <Route path="roles" element={<RoleManagement />} />
                 <Route path="settings" element={<SystemSettings />} />
@@ -108,7 +108,7 @@ const App = () => {
             </Route>
 
             {/* 404页面重定向到首页 */}
-            <Route path="*" element={<Navigate to="/home" replace />} />
+            <Route path="*" element={<Navigate to="home" replace />} />
           </Routes>
         </Suspense>
       </AntApp>
