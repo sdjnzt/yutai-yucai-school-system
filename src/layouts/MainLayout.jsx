@@ -155,23 +155,9 @@ const MainLayout = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          padding: '0 8px'
         }}>
-          <div style={{
-            width: 32,
-            height: 32,
-            background: 'rgba(255, 255, 255, 0.2)',
-            borderRadius: 6,
-            marginRight: collapsed ? 0 : 8,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '18px',
-            color: '#fff',
-            fontWeight: 'bold'
-          }}>
-            YC
-          </div>
           {!collapsed && (
             <h1 style={{
               color: '#fff',
@@ -180,7 +166,9 @@ const MainLayout = () => {
               fontWeight: 'normal',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
-              textOverflow: 'ellipsis'
+              textOverflow: 'ellipsis',
+              textAlign: 'center',
+              width: '100%'
             }}>
               鱼台县育才学校教务系统
             </h1>
