@@ -113,10 +113,10 @@ const MainLayout = () => {
   const handleUserMenuClick = ({ key }) => {
     switch (key) {
       case 'profile':
-        navigate('/system/profile');
+        navigate('system/profile');
         break;
       case 'settings':
-        navigate('/system/settings');
+        navigate('system/settings');
         break;
       case 'logout':
         modal.confirm({
@@ -126,7 +126,7 @@ const MainLayout = () => {
           cancelText: '取消',
           onOk: () => {
             localStorage.removeItem('token');
-            navigate('/login');
+            navigate('login', { replace: true });
             modal.success({
               title: '退出成功',
               content: '已安全退出系统',

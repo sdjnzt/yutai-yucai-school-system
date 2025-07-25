@@ -37,10 +37,33 @@ const { Option } = Select;
 const SystemSettings = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
+  const [activeTab, setActiveTab] = useState('basic');
+
+  // 重置表单
+  const resetForm = () => {
+    form.resetFields();
+  };
+
+  // 处理标签页切换
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    resetForm();
+  };
 
   // 处理表单提交
   const handleSubmit = (values) => {
-    console.log('Form values:', values);
+    // 转换时间值为字符串格式
+    const formattedValues = {
+      ...values,
+      backupTime: values.backupTime?.format('HH:mm:ss'),
+      morningStudy: values.morningStudy?.map(time => time?.format('HH:mm')),
+      breakfast: values.breakfast?.map(time => time?.format('HH:mm')),
+      periods: values.periods?.map(period => ({
+        ...period,
+        time: period.time?.map(time => time?.format('HH:mm'))
+      }))
+    };
+    console.log('Form values:', formattedValues);
     message.success('设置保存成功');
   };
 
@@ -58,12 +81,61 @@ const SystemSettings = () => {
     return isLt2M;
   };
 
+  // 获取当前标签页的初始值
+  const getInitialValues = () => {
+    const commonValues = {
+      systemName: '鱼台县育才学校教务系统',
+      systemLogo: '',
+      systemDesc: '鱼台县育才学校教务管理系统是一个现代化的教育管理平台，致力于提供高效、便捷的教务管理服务。',
+      copyright: '© 2025 鱼台县育才学校 版权所有',
+      recordNumber: '',
+    };
+
+    const scheduleValues = {
+      morningStudy: [dayjs('06:30', 'HH:mm'), dayjs('07:20', 'HH:mm')],
+      breakfast: [dayjs('07:20', 'HH:mm'), dayjs('07:50', 'HH:mm')],
+      periods: [
+        { name: '第一节', time: [dayjs('08:00', 'HH:mm'), dayjs('08:45', 'HH:mm')] },
+        { name: '第二节', time: [dayjs('08:55', 'HH:mm'), dayjs('09:40', 'HH:mm')] },
+        { name: '第三节', time: [dayjs('10:00', 'HH:mm'), dayjs('10:45', 'HH:mm')] },
+        { name: '第四节', time: [dayjs('10:55', 'HH:mm'), dayjs('11:40', 'HH:mm')] },
+        { name: '午休', time: [dayjs('12:00', 'HH:mm'), dayjs('14:00', 'HH:mm')] },
+        { name: '第五节', time: [dayjs('14:00', 'HH:mm'), dayjs('14:45', 'HH:mm')] },
+        { name: '第六节', time: [dayjs('14:55', 'HH:mm'), dayjs('15:40', 'HH:mm')] },
+        { name: '第七节', time: [dayjs('16:00', 'HH:mm'), dayjs('16:45', 'HH:mm')] },
+        { name: '第八节', time: [dayjs('16:55', 'HH:mm'), dayjs('17:40', 'HH:mm')] },
+        { name: '晚自习', time: [dayjs('19:00', 'HH:mm'), dayjs('21:00', 'HH:mm')] },
+      ]
+    };
+
+    const dataValues = {
+      autoBackup: true,
+      backupTime: dayjs('00:00:00', 'HH:mm:ss'),
+      backupRetention: 30,
+      backupStorage: 'local',
+      dataRetention: {
+        log: 90,
+        notification: 30,
+        attachment: 365,
+      }
+    };
+
+    switch (activeTab) {
+      case 'schedule':
+        return scheduleValues;
+      case 'data':
+        return dataValues;
+      default:
+        return commonValues;
+    }
+  };
+
   return (
     <div>
       <Card>
         <Title level={4}>系统设置</Title>
 
-        <Tabs defaultActiveKey="basic">
+        <Tabs defaultActiveKey="basic" onChange={handleTabChange}>
           {/* 基本设置 */}
           <TabPane
             tab={
@@ -86,13 +158,7 @@ const SystemSettings = () => {
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
-              initialValues={{
-                systemName: '鱼台县育才学校教务系统',
-                systemLogo: '',
-                systemDesc: '鱼台县育才学校教务管理系统是一个现代化的教育管理平台，致力于提供高效、便捷的教务管理服务。',
-                copyright: '© 2025 鱼台县育才学校 版权所有',
-                recordNumber: '鲁ICP备XXXXXXXX号',
-              }}
+              initialValues={getInitialValues()}
             >
               <Row gutter={24}>
                 <Col span={12}>
@@ -379,17 +445,7 @@ const SystemSettings = () => {
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
-              initialValues={{
-                autoBackup: true,
-                backupTime: dayjs('00:00:00', 'HH:mm:ss'),
-                backupRetention: 30,
-                backupStorage: 'local',
-                dataRetention: {
-                  log: 90,
-                  notification: 30,
-                  attachment: 365,
-                },
-              }}
+              initialValues={getInitialValues()}
             >
               <Form.Item
                 name="autoBackup"
@@ -501,22 +557,7 @@ const SystemSettings = () => {
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
-              initialValues={{
-                morningStudy: ['06:30', '07:20'],
-                breakfast: ['07:20', '07:50'],
-                periods: [
-                  { name: '第一节', time: ['08:00', '08:45'] },
-                  { name: '第二节', time: ['08:55', '09:40'] },
-                  { name: '第三节', time: ['10:00', '10:45'] },
-                  { name: '第四节', time: ['10:55', '11:40'] },
-                  { name: '午休', time: ['12:00', '14:00'] },
-                  { name: '第五节', time: ['14:00', '14:45'] },
-                  { name: '第六节', time: ['14:55', '15:40'] },
-                  { name: '第七节', time: ['16:00', '16:45'] },
-                  { name: '第八节', time: ['16:55', '17:40'] },
-                  { name: '晚自习', time: ['19:00', '21:00'] },
-                ],
-              }}
+              initialValues={getInitialValues()}
             >
               <Row gutter={24}>
                 <Col span={12}>

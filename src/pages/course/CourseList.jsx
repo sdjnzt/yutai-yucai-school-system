@@ -45,41 +45,105 @@ const CourseList = () => {
   // 生成课程数据
   const generateCourses = () => {
     const courses = [];
-    const subjects = [
-      { name: '语文', type: '文科', credit: 4 },
-      { name: '数学', type: '理科', credit: 4 },
-      { name: '英语', type: '文科', credit: 4 },
-      { name: '物理', type: '理科', credit: 3 },
-      { name: '化学', type: '理科', credit: 3 },
-      { name: '生物', type: '理科', credit: 3 },
-      { name: '政治', type: '文科', credit: 2 },
-      { name: '历史', type: '文科', credit: 2 },
-      { name: '地理', type: '文科', credit: 2 }
+    
+    // 必修课程配置
+    const requiredCourses = [
+      { name: '语文', type: '文科', credit: 4, grades: ['高一', '高二', '高三'] },
+      { name: '数学', type: '理科', credit: 4, grades: ['高一', '高二', '高三'] },
+      { name: '英语', type: '文科', credit: 4, grades: ['高一', '高二', '高三'] },
+      { name: '物理', type: '理科', credit: 3, grades: ['高一', '高二'] },
+      { name: '化学', type: '理科', credit: 3, grades: ['高一', '高二'] },
+      { name: '生物', type: '理科', credit: 3, grades: ['高一', '高二'] },
+      { name: '政治', type: '文科', credit: 2, grades: ['高一', '高二'] },
+      { name: '历史', type: '文科', credit: 2, grades: ['高一', '高二'] },
+      { name: '地理', type: '文科', credit: 2, grades: ['高一', '高二'] },
+      { name: '信息技术', type: '理科', credit: 2, grades: ['高一'] },
+      { name: '通用技术', type: '理科', credit: 2, grades: ['高一'] },
+      { name: '音乐', type: '文科', credit: 2, grades: ['高一'] },
+      { name: '美术', type: '文科', credit: 2, grades: ['高一'] },
+      { name: '体育与健康', type: '文科', credit: 2, grades: ['高一', '高二', '高三'] }
     ];
 
-    const grades = ['高一', '高二', '高三'];
-    const classTypes = ['必修', '选修'];
-    const examTypes = ['期中考试', '期末考试', '月考', '单元测试'];
-    const classrooms = ['多媒体教室', '实验室', '普通教室'];
+    // 选修课程配置
+    const electiveCourses = [
+      { name: '物理', type: '理科', credit: 4, grades: ['高三'] },
+      { name: '化学', type: '理科', credit: 4, grades: ['高三'] },
+      { name: '生物', type: '理科', credit: 4, grades: ['高三'] },
+      { name: '政治', type: '文科', credit: 4, grades: ['高三'] },
+      { name: '历史', type: '文科', credit: 4, grades: ['高三'] },
+      { name: '地理', type: '文科', credit: 4, grades: ['高三'] },
+      { name: '数学竞赛', type: '理科', credit: 2, grades: ['高二'] },
+      { name: '物理竞赛', type: '理科', credit: 2, grades: ['高二'] },
+      { name: '化学竞赛', type: '理科', credit: 2, grades: ['高二'] },
+      { name: '生物竞赛', type: '理科', credit: 2, grades: ['高二'] },
+      { name: '信息学竞赛', type: '理科', credit: 2, grades: ['高二'] }
+    ];
 
-    subjects.forEach((subject, index) => {
-      grades.forEach((grade) => {
-        classTypes.forEach((type) => {
-          const courseId = `C${String(index + 1).padStart(2, '0')}${grade.slice(1)}${type === '必修' ? 'B' : 'X'}`;
-          courses.push({
-            id: courseId,
-            name: `${subject.name}${type === '必修' ? '' : '选修'}`,
-            subject: subject.name,
-            subjectType: subject.type,
-            grade,
-            type,
-            credit: subject.credit,
-            weeklyHours: subject.credit * 2,
-            examTypes: examTypes.slice(0, 2 + Math.floor(Math.random() * 2)),
-            classroom: classrooms[Math.floor(Math.random() * classrooms.length)],
-            description: `${grade}${subject.name}${type}课程，培养学生${subject.name}学科核心素养...`,
-            status: 'active'
-          });
+    const examTypes = {
+      required: ['期中考试', '期末考试', '月考', '单元测试'],
+      elective: ['期中考试', '期末考试']
+    };
+
+    const classrooms = {
+      '语文': '普通教室',
+      '数学': '普通教室',
+      '英语': '多媒体教室',
+      '物理': '实验室',
+      '化学': '实验室',
+      '生物': '实验室',
+      '政治': '多媒体教室',
+      '历史': '多媒体教室',
+      '地理': '多媒体教室',
+      '信息技术': '计算机教室',
+      '通用技术': '实验室',
+      '音乐': '音乐教室',
+      '美术': '美术教室',
+      '体育与健康': '体育馆',
+      '数学竞赛': '普通教室',
+      '物理竞赛': '实验室',
+      '化学竞赛': '实验室',
+      '生物竞赛': '实验室',
+      '信息学竞赛': '计算机教室'
+    };
+
+    // 生成必修课程
+    requiredCourses.forEach((course, index) => {
+      course.grades.forEach((grade) => {
+        const courseId = `C${String(index + 1).padStart(2, '0')}${grade.slice(1)}B`;
+        courses.push({
+          id: courseId,
+          name: course.name,
+          subject: course.name,
+          subjectType: course.type,
+          grade,
+          type: '必修',
+          credit: course.credit,
+          weeklyHours: course.credit * 2,
+          examTypes: examTypes.required,
+          classroom: classrooms[course.name] || '普通教室',
+          description: `${grade}${course.name}必修课程，培养学生${course.name}学科核心素养，掌握基础知识和基本技能。`,
+          status: 'active'
+        });
+      });
+    });
+
+    // 生成选修课程
+    electiveCourses.forEach((course, index) => {
+      course.grades.forEach((grade) => {
+        const courseId = `X${String(index + 1).padStart(2, '0')}${grade.slice(1)}X`;
+        courses.push({
+          id: courseId,
+          name: `${course.name}${course.grades.includes('高三') ? '' : '（选修）'}`,
+          subject: course.name,
+          subjectType: course.type,
+          grade,
+          type: '选修',
+          credit: course.credit,
+          weeklyHours: course.credit * 2,
+          examTypes: examTypes.elective,
+          classroom: classrooms[course.name] || '普通教室',
+          description: `${grade}${course.name}选修课程，${course.grades.includes('高三') ? '深入学习本学科知识，为高考做准备。' : '提供学科拓展和竞赛培训。'}`,
+          status: 'active'
         });
       });
     });

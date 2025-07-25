@@ -64,47 +64,47 @@ const App = () => {
               <Route path="student">
                 <Route path="list" element={<StudentList />} />
                 <Route path="class" element={<ClassManagement />} />
-              </Route>
+            </Route>
 
               {/* 教师管理 */}
               <Route path="teacher">
                 <Route path="list" element={<TeacherList />} />
                 <Route path="schedule" element={<TeacherSchedule />} />
-              </Route>
+            </Route>
 
               {/* 课程管理 */}
               <Route path="course">
                 <Route path="list" element={<CourseList />} />
                 <Route path="schedule" element={<CourseSchedule />} />
                 <Route path="plan" element={<CoursePlan />} />
-              </Route>
+            </Route>
 
               {/* 成绩管理 */}
               <Route path="score">
                 <Route path="input" element={<ScoreInput />} />
                 <Route path="analysis" element={<ScoreAnalysis />} />
                 <Route path="report" element={<ScoreReport />} />
-              </Route>
+            </Route>
 
               {/* 流程审批 */}
               <Route path="workflow">
                 <Route path="pending" element={<PendingApproval />} />
                 <Route path="done" element={<DoneApproval />} />
-              </Route>
+            </Route>
 
               {/* 通知公告 */}
               <Route path="announcement">
                 <Route path="list" element={<NotificationList />} />
                 <Route path="create" element={<PublishNotification />} />
                 <Route path="my" element={<MyNotification />} />
-              </Route>
+            </Route>
 
               {/* 系统管理 */}
               <Route path="system">
                 <Route path="users" element={<UserManagement />} />
                 <Route path="roles" element={<RoleManagement />} />
                 <Route path="settings" element={<SystemSettings />} />
-              </Route>
+            </Route>
             </Route>
 
             {/* 404页面重定向到首页 */}
