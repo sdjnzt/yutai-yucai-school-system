@@ -20,6 +20,7 @@ import {
   Statistic,
   Descriptions,
   Divider,
+  DatePicker,
 } from 'antd';
 import {
   PlusOutlined,
@@ -39,6 +40,7 @@ import {
   SwapOutlined,
   ClockCircleOutlined,
 } from '@ant-design/icons';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -70,12 +72,16 @@ const StudentList = () => {
     const names = ['伟', '芳', '娜', '秀英', '敏', '静', '丽', '强', '磊', '军', '洋', '勇', '艳', '杰', '涛', '明', '超', '秀兰', '霞', '平'];
     const status = ['active', 'active', 'active', 'active', 'active', 'inactive', 'transferred']; // 大多数是在读状态
 
+    // 当前年份是2025年
+    const currentYear = 2025;
+
     grades.forEach((grade, gradeIndex) => {
       // 每个年级8个班
       for (let classNum = 1; classNum <= 8; classNum++) {
         // 每个班50个学生
         for (let studentNum = 1; studentNum <= 50; studentNum++) {
-          const enrollmentYear = 2025 - gradeIndex;
+          // 根据年级计算入学年份：高一2024年入学，高二2023年入学，高三2022年入学
+          const enrollmentYear = currentYear - gradeIndex;
           const id = `${enrollmentYear}07${String(classNum).padStart(2, '0')}${String(studentNum).padStart(2, '0')}`;
           
           // 随机生成姓名
@@ -103,11 +109,32 @@ const StudentList = () => {
           const birthDay = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
           const idCard = `37000020${birthYear}${birthMonth}${birthDay}${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
           
-          // 生成入学日期
-          const enrollmentDate = `${enrollmentYear}-09-01`;
+          // 生成入学日期 - 修复为正确的格式和逻辑
+          // 高中入学时间一般是9月1日
+          // 确保格式为 YYYY-MM-DD
+          const enrollmentMonth = '09';
+          const enrollmentDay = '01';
+          
+          // 高一的学生还未入学，入学日期应该是未来日期（2025-09-01）
+          // 高二是去年入学（2024-09-01）
+          // 高三是前年入学（2023-09-01）
+          let enrollmentDate;
+          if (grade === '高一') {
+            // 新高一还未入学，入学日期是未来的9月1日
+            enrollmentDate = `${currentYear}-${enrollmentMonth}-${enrollmentDay}`;
+          } else {
+            // 高二和高三已经入学
+            enrollmentDate = `${currentYear - gradeIndex}-${enrollmentMonth}-${enrollmentDay}`;
+          }
           
           // 随机选择状态（大多数是在读状态）
-          const studentStatus = status[Math.floor(Math.random() * status.length)];
+          // 高一学生还未入学，状态应为"待入学"(pending)
+          let studentStatus;
+          if (grade === '高一') {
+            studentStatus = 'pending'; // 待入学状态
+          } else {
+            studentStatus = status[Math.floor(Math.random() * status.length)];
+          }
 
           students.push({
             id,
@@ -208,6 +235,7 @@ const StudentList = () => {
       dataIndex: 'enrollmentDate',
       key: 'enrollmentDate',
       width: 120,
+      render: (date) => date, // 直接显示日期字符串
       sorter: (a, b) => new Date(a.enrollmentDate) - new Date(b.enrollmentDate),
     },
     {
@@ -221,6 +249,7 @@ const StudentList = () => {
           inactive: { color: 'default', text: '休学' },
           graduated: { color: 'processing', text: '毕业' },
           transferred: { color: 'warning', text: '转学' },
+          pending: { color: 'processing', text: '待入学' }, // 新增待入学状态
         };
         return (
           <Badge
@@ -234,6 +263,7 @@ const StudentList = () => {
         { text: '休学', value: 'inactive' },
         { text: '毕业', value: 'graduated' },
         { text: '转学', value: 'transferred' },
+        { text: '待入学', value: 'pending' }, // 新增待入学状态
       ],
       onFilter: (value, record) => record.status === value,
     },
@@ -319,6 +349,7 @@ const StudentList = () => {
           <Option value="inactive">休学</Option>
           <Option value="graduated">毕业</Option>
           <Option value="transferred">转学</Option>
+          <Option value="pending">待入学</Option>
         </Select>
       ),
     },
@@ -409,7 +440,14 @@ const StudentList = () => {
       name: 'enrollmentDate',
       label: '入学日期',
       rules: [{ required: true, message: '请选择入学日期' }],
-      component: <Input type="date" />,
+      component: (
+        <DatePicker
+          style={{ width: '100%' }}
+          format="YYYY-MM-DD"
+          placeholder="选择入学日期"
+          allowClear={false}
+        />
+      ),
     },
     {
       name: 'idCard',
@@ -433,6 +471,7 @@ const StudentList = () => {
           <Option value="inactive">休学</Option>
           <Option value="graduated">毕业</Option>
           <Option value="transferred">转学</Option>
+          <Option value="pending">待入学</Option>
         </Select>
       ),
     },
@@ -490,7 +529,14 @@ const StudentList = () => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      console.log('提交数据：', values);
+      // 处理日期格式
+      const formattedValues = { ...values };
+      if (formattedValues.enrollmentDate) {
+        // 确保日期格式为 YYYY-MM-DD 字符串
+        formattedValues.enrollmentDate = dayjs(formattedValues.enrollmentDate).format('YYYY-MM-DD');
+      }
+      
+      console.log('提交数据：', formattedValues);
       // 实现添加/编辑逻辑
       await new Promise(resolve => setTimeout(resolve, 1000));
       message.success(`${editingStudent ? '编辑' : '添加'}成功`);
@@ -508,7 +554,18 @@ const StudentList = () => {
   // 处理编辑
   const handleEdit = (record) => {
     setEditingStudent(record);
-    form.setFieldsValue(record);
+    // 将日期字符串转换为dayjs对象，确保DatePicker能正确显示
+    const formValues = { ...record };
+    if (formValues.enrollmentDate) {
+      try {
+        formValues.enrollmentDate = dayjs(formValues.enrollmentDate);
+      } catch (error) {
+        console.error('日期转换错误:', error);
+        // 如果转换失败，使用当前日期
+        formValues.enrollmentDate = dayjs();
+      }
+    }
+    form.setFieldsValue(formValues);
     setVisible(true);
   };
 
@@ -533,6 +590,7 @@ const StudentList = () => {
     const active = students.filter(s => s.status === 'active').length;
     const inactive = students.filter(s => s.status === 'inactive').length;
     const transferred = students.filter(s => s.status === 'transferred').length;
+    const pending = students.filter(s => s.status === 'pending').length;
     
     // 计算各年级班级数
     const classCount = new Set(students.map(s => `${s.grade}-${s.class}`)).size;
@@ -549,6 +607,7 @@ const StudentList = () => {
       active,
       inactive,
       transferred,
+      pending,
       classCount,
       gradeOne,
       gradeTwo,
@@ -579,12 +638,14 @@ const StudentList = () => {
           status={
             student.status === 'active' ? 'success' :
             student.status === 'inactive' ? 'default' :
-            student.status === 'transferred' ? 'warning' : 'default'
+            student.status === 'transferred' ? 'warning' :
+            student.status === 'pending' ? 'processing' : 'default' // 新增待入学状态
           }
           text={
             student.status === 'active' ? '在读' :
             student.status === 'inactive' ? '休学' :
-            student.status === 'transferred' ? '转学' : '未知'
+            student.status === 'transferred' ? '转学' :
+            student.status === 'pending' ? '待入学' : '未知' // 新增待入学状态
           }
         />
       </Descriptions.Item>
@@ -678,6 +739,9 @@ const StudentList = () => {
               <span>
                 <Badge status="warning" /> 转学：{statistics.transferred}人
               </span>
+            </div>
+            <div style={{ marginTop: '8px', textAlign: 'center' }}>
+              <Badge status="processing" /> 待入学：{statistics.pending}人
             </div>
           </Card>
         </Col>
