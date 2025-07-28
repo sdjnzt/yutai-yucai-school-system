@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, List, Tag, Button, Space, Avatar, Badge, Steps, Timeline, Statistic } from 'antd';
 import {
   TeamOutlined,
@@ -38,9 +38,26 @@ const { Step } = Steps;
 const Home = () => {
   const navigate = useNavigate();
   
+  // 添加状态来存储当前日期和时间
+  const [currentDate, setCurrentDate] = useState(dayjs());
+  
+  // 使用 useEffect 设置定时器，每分钟更新一次时间
+  useEffect(() => {
+    // 初始化时设置当前时间
+    setCurrentDate(dayjs());
+    
+    // 创建定时器，每分钟更新一次
+    const timer = setInterval(() => {
+      setCurrentDate(dayjs());
+    }, 60000); // 60000毫秒 = 1分钟
+    
+    // 组件卸载时清除定时器
+    return () => clearInterval(timer);
+  }, []);
+  
   // 获取当前时间
   const getGreeting = () => {
-    const hour = new Date().getHours();
+    const hour = currentDate.hour();
     if (hour < 6) return '夜深了';
     if (hour < 9) return '早上好';
     if (hour < 12) return '上午好';
@@ -138,6 +155,34 @@ const Home = () => {
     },
   ];
 
+  // 系统公告
+  const announcements = [
+    {
+      title: '关于系统升级维护的通知',
+      type: 'system',
+      date: currentDate.format('YYYY-MM-DD'),
+      department: '信息中心',
+      priority: 'high',
+      content: `定于${currentDate.clone().add(2, 'day').format('YYYY年MM月DD日')}（${['周日', '周一', '周二', '周三', '周四', '周五', '周六'][currentDate.clone().add(2, 'day').day()]}）凌晨2:00-4:00进行系统升级维护，届时系统将暂停服务。主要更新内容：1. 优化系统性能 2. 提升安全等级 3. 新增教学管理功能。请各位用户提前做好相关工作安排。`,
+    },
+    {
+      title: '关于加强账号安全管理的通知',
+      type: 'security',
+      date: currentDate.clone().subtract(1, 'day').format('YYYY-MM-DD'),
+      department: '信息中心',
+      priority: 'high',
+      content: '为保障系统安全，请各位用户：1. 定期修改密码 2. 不要将账号借给他人使用 3. 及时退出登录 4. 开启双因素认证。如发现账号异常，请立即联系系统管理员。',
+    },
+    {
+      title: '新版教务系统功能介绍',
+      type: 'notice',
+      date: currentDate.clone().subtract(2, 'day').format('YYYY-MM-DD'),
+      department: '教务处',
+      priority: 'medium',
+      content: `新版教务系统已完成升级，新增功能：1. 智能排课系统 2. 成绩分析报告 3. 在线办公审批 4. 移动端适配。请各位老师积极参与系统使用培训，培训时间：${currentDate.format('MM月DD日')}下午14:30，地点：学术报告厅。`,
+    },
+  ];
+
   // 待办事项
   const todos = [
     {
@@ -156,7 +201,7 @@ const Home = () => {
     },
     {
       title: '新用户权限审核',
-      deadline: '7月26日',
+      deadline: currentDate.clone().add(1, 'day').format('MM月DD日'),
       type: 'user',
       priority: 'medium',
       description: '审核2个新用户的权限申请',
@@ -184,34 +229,6 @@ const Home = () => {
       content: '更新了系统安全策略配置',
       time: '2小时前',
       type: 'setting',
-    },
-  ];
-
-  // 系统公告
-  const announcements = [
-    {
-      title: '关于系统升级维护的通知',
-      type: 'system',
-      date: '2025-07-25',
-      department: '信息中心',
-      priority: 'high',
-      content: '定于2025年7月27日（星期日）凌晨2:00-4:00进行系统升级维护，届时系统将暂停服务。主要更新内容：1. 优化系统性能 2. 提升安全等级 3. 新增教学管理功能。请各位用户提前做好相关工作安排。',
-    },
-    {
-      title: '关于加强账号安全管理的通知',
-      type: 'security',
-      date: '2025-07-24',
-      department: '信息中心',
-      priority: 'high',
-      content: '为保障系统安全，请各位用户：1. 定期修改密码 2. 不要将账号借给他人使用 3. 及时退出登录 4. 开启双因素认证。如发现账号异常，请立即联系系统管理员。',
-    },
-    {
-      title: '新版教务系统功能介绍',
-      type: 'notice',
-      date: '2025-07-23',
-      department: '教务处',
-      priority: 'medium',
-      content: '新版教务系统已完成升级，新增功能：1. 智能排课系统 2. 成绩分析报告 3. 在线办公审批 4. 移动端适配。请各位老师积极参与系统使用培训，培训时间：7月25日下午14:30，地点：学术报告厅。',
     },
   ];
 
@@ -270,7 +287,7 @@ const Home = () => {
           </div>
           <div style={{ textAlign: 'right' }}>
             <p style={{ color: 'rgba(255, 255, 255, 0.85)', marginBottom: '8px' }}>
-              {dayjs('2025-07-25').format('YYYY年MM月DD日')} {['周日', '周一', '周二', '周三', '周四', '周五', '周六'][dayjs('2025-07-25').day()]}
+              {currentDate.format('YYYY年MM月DD日')} {['周日', '周一', '周二', '周三', '周四', '周五', '周六'][currentDate.day()]}
             </p>
             <Tag color="green">系统运行正常</Tag>
           </div>

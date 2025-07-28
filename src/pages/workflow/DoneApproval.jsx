@@ -48,7 +48,11 @@ const DoneApproval = () => {
   const [detailVisible, setDetailVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [searchForm] = Form.useForm();
+  // eslint-disable-next-line no-unused-vars
   const [searchParams, setSearchParams] = useState({});
+
+  // 获取当前日期
+  const currentDate = dayjs();
 
   // 生成已办审批数据
   const generateDoneApprovals = (type) => {
@@ -102,7 +106,19 @@ const DoneApproval = () => {
     const processingTimes = ['1小时内', '2小时内', '4小时内', '8小时内', '24小时内'];
 
     for (let i = 1; i <= 8; i++) {
-      const date = dayjs('2025-07-25').subtract(Math.floor(Math.random() * 30), 'day');
+      // 使用当前日期减去随机天数，生成最近一个月的申请
+      const date = currentDate.clone().subtract(Math.floor(Math.random() * 30), 'day');
+      
+      // 随机生成时分秒
+      const hour = Math.floor(Math.random() * 24);
+      const minute = Math.floor(Math.random() * 60);
+      const second = Math.floor(Math.random() * 60);
+      const randomTime = date.clone().hour(hour).minute(minute).second(second);
+      
+      // 随机生成审批时间（1小时到24小时之后）
+      const approvalHours = Math.floor(Math.random() * 24) + 1;
+      const approvalTime = randomTime.clone().add(approvalHours, 'hour');
+      
       const status = statuses[Math.floor(Math.random() * statuses.length)];
       const teacher = teachers[Math.floor(Math.random() * teachers.length)];
       const department = departments[Math.floor(Math.random() * departments.length)];
@@ -126,8 +142,8 @@ const DoneApproval = () => {
         status,
         urgency,
         processingTime,
-        createTime: date.format('YYYY-MM-DD HH:mm:ss'),
-        approveTime: date.add(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
+        createTime: randomTime.format('YYYY-MM-DD HH:mm:ss'),
+        approveTime: approvalTime.format('YYYY-MM-DD HH:mm:ss'),
         comment: status === '已通过' ? '同意申请' : '不符合申请条件',
       };
 
@@ -135,17 +151,23 @@ const DoneApproval = () => {
         const days = Math.floor(Math.random() * 5) + 1;
         record = {
           ...record,
-          startDate: date.format('YYYY-MM-DD'),
-          endDate: date.add(days, 'day').format('YYYY-MM-DD'),
+          startDate: randomTime.format('YYYY-MM-DD'),
+          endDate: randomTime.clone().add(days, 'day').format('YYYY-MM-DD'),
           days,
           reason: `因${content === '病假' ? '身体不适' : '个人事务'}申请请假${days}天`,
         };
       } else if (type === 'car') {
+        // 用车时间从当前时间开始，持续几个小时
+        const startHour = 8 + Math.floor(Math.random() * 10); // 8:00 - 18:00
+        const startMinute = Math.floor(Math.random() * 60);
+        const carStartTime = randomTime.clone().hour(startHour).minute(startMinute).second(0);
+        const carDuration = Math.floor(Math.random() * 8) + 2; // 2-10小时
+        
         record = {
           ...record,
           destination: ['市教育局', '县实验基地', '市体育馆', '市图书馆'][Math.floor(Math.random() * 4)],
-          startTime: date.format('YYYY-MM-DD HH:mm'),
-          endTime: date.add(Math.floor(Math.random() * 8) + 2, 'hour').format('YYYY-MM-DD HH:mm'),
+          startTime: carStartTime.format('YYYY-MM-DD HH:mm'),
+          endTime: carStartTime.clone().add(carDuration, 'hour').format('YYYY-MM-DD HH:mm'),
           carType: ['小型轿车', '中型客车', '大型客车'][Math.floor(Math.random() * 3)],
         };
       } else if (type === 'material') {
@@ -197,8 +219,10 @@ const DoneApproval = () => {
   // 处理搜索
   const handleSearch = (values) => {
     console.log('Search values:', values);
-    setSearchParams(values);
-    // message.success('搜索条件已更新'); // Removed message as it's not imported
+    setSearchParams(values); // 这里使用了 searchParams
+    
+    // 实际应用中，这里会根据 searchParams 过滤数据
+    // 由于我们使用的是模拟数据，这里只是演示
   };
 
   // 表格列配置
